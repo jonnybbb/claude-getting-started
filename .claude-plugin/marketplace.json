@@ -1,0 +1,12 @@
+{
+  "name": "claude-getting-started",
+  "owner": { "name": "Johannes Buehler" },
+  "description": "Starter slash commands and a local code-review plugin for Claude Code.",
+  "plugins": [
+    {
+      "name": "code-review",
+      "source": "./code-review",
+      "description": "Local, semantic PR reviews powered by the IntelliJ IDE Index MCP server plus the JetBrains command-line code inspector. Catches cross-file impact bugs via project-wide semantic queries, with breadth coverage from JetBrains' built-in inspection set, without cloud indexing."
+    }
+  ]
+}

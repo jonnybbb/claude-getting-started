@@ -1,0 +1,6 @@
+{
+  "name": "code-review",
+  "version": "0.2.0",
+  "description": "Local, semantic PR reviews powered by the IntelliJ IDE Index MCP server plus the JetBrains command-line code inspector. Catches cross-file impact bugs via project-wide semantic queries, with breadth coverage from JetBrains' built-in inspection set, without cloud indexing.",
+  "keywords": ["code-review", "intellij", "mcp", "semantic-review", "static-analysis", "jetbrains-inspector"]
+}

@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "claude-getting-started": {
+      "source": {
+        "source": "github",
+        "repo": "jonnybbb/claude-getting-started"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "code-review@claude-getting-started": true
+  }
+}
