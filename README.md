@@ -26,6 +26,56 @@ ln -s "$PWD"/.claude/commands/*.md ~/.claude/commands/
 
 Then open Claude Code in your repo and run any of the slash commands.
 
+## Spec Kit (optional)
+
+[Spec Kit](https://github.com/github/spec-kit) layers a spec-driven workflow (`/speckit.constitution`, `/speckit.specify`, `/speckit.plan`, `/speckit.tasks`, `/speckit.implement`, …) on top of Claude Code. The two extensions below smooth out brownfield onboarding and make clarification prompts nicer.
+
+Prerequisites: Python 3.11+, Git, and [`uv`](https://docs.astral.sh/uv/) (or `pipx`).
+
+### 1. Install the Specify CLI
+
+```bash
+# Persistent install, pinned to the latest release
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git@v0.8.5
+
+specify version
+```
+
+### 2. Initialise Spec Kit in a project
+
+```bash
+# In a fresh directory
+specify init <PROJECT_NAME> --integration claude
+
+# Or in the current directory
+specify init --here --integration claude
+```
+
+This writes the `/speckit.*` commands into `.claude/` and seeds `CLAUDE.md`.
+
+### 3. Add the brownfield extension
+
+[`spec-kit-brownfield`](https://github.com/Quratulain-bilal/spec-kit-brownfield) adds `/speckit.brownfield.scan|bootstrap|validate|migrate` for adopting Spec Kit on an existing codebase.
+
+```bash
+specify extension add brownfield --from https://github.com/Quratulain-bilal/spec-kit-brownfield/archive/refs/tags/v1.0.0.zip
+```
+
+### 4. Add the AskUserQuestion preset
+
+[`spec-kit-preset-claude-ask-questions`](https://github.com/0xrafasec/spec-kit-preset-claude-ask-questions) replaces the Markdown-table prompts in `/speckit.clarify` and `/speckit.checklist` with Claude Code's native `AskUserQuestion` picker, including a recommended option and reasoning.
+
+```bash
+specify preset add claude-ask-questions --from https://github.com/0xrafasec/spec-kit-preset-claude-ask-questions/archive/refs/tags/v1.0.0.zip
+```
+
+Verify both landed:
+
+```bash
+specify extension list
+specify preset list
+```
+
 ## Notes
 
 - `.claude/settings.local.json` is git-ignored on purpose — it's per-user.
