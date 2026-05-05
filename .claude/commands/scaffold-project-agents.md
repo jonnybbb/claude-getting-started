@@ -24,6 +24,7 @@ Read enough of the repo to identify, with evidence:
 - **Test commands**: how tests are run (`./gradlew test`, `npm test`, `pytest`, `go test ./...`, …). Read CI files (`.github/workflows/*.yml`, `.gitlab-ci.yml`, `Jenkinsfile`) to confirm canonical commands.
 - **Lint / format commands**: `eslint`, `prettier`, `ktlint`, `spotless`, `ruff`, `black`, `gofmt`, …. Again confirm via CI where possible.
 - **Build / run commands**: `./gradlew build`, `npm run build`, `docker compose up`, …
+- **Available skills** the implementer agents can preload. Check both `.claude/skills/<name>/SKILL.md` and `.claude/<name>/SKILL.md` for known-relevant skills. In particular: a **`tdd`** skill (`.claude/skills/tdd/SKILL.md` or `.claude/tdd/SKILL.md`) — if present, the `frontend-engineer` and `backend-engineer` agents should preload it via `skills: [tdd]` in their frontmatter.
 
 Keep inspection focused. Read at most ~15 files. Skip `node_modules`, `target/`, `build/`, `dist/`, `.gradle/`. If the repo is huge, sample: top-level files, one or two source files per layer, the CI config.
 
@@ -45,11 +46,12 @@ Present a single proposal block to the user with this exact shape:
 ### frontend-engineer
 - Responsibility: <one sentence>
 - Tools: <Bash patterns, Read, Edit, Write, Grep, Glob — list explicitly>
+- Skills: <list, e.g. `tdd` if a tdd skill was detected; otherwise omit the line>
 - Model: sonnet (default)
 - Stack-specific notes in prompt: <bullets>
 
 ### backend-engineer
-- (same shape)
+- (same shape, including the Skills line when tdd is detected)
 
 ### security-reviewer
 - (same shape, mostly stack-agnostic but referencing project lint/test commands and dependency files)
@@ -71,6 +73,8 @@ Only after explicit approval, create exactly four files. Use this format for eac
 name: <agent-name>
 description: <one-line description that ends with concrete trigger conditions; this is what Claude reads to decide when to delegate>
 tools: <comma-separated tool list; restrict to what the agent needs>
+skills:
+  - <skill-name>   # optional; only include the block if relevant skills were detected (see per-agent guidance below). Omit the whole `skills:` key if none.
 model: sonnet
 ---
 
@@ -98,11 +102,13 @@ You are the <role> for this project.
 
 **frontend-engineer**
 - Tools: `Read, Edit, Write, Grep, Glob` plus a package-manager Bash allowance — `Bash(npm:*), Bash(pnpm:*), Bash(yarn:*), Bash(npx:*)` for JS, or `Bash(flutter:*), Bash(dart:*)` for Flutter. Add `Bash(<test-cmd>:*)` for the frontend test runner (`vitest`, `jest`, `flutter test`, …).
+- Skills: if a `tdd` skill was detected during inspection (`.claude/skills/tdd/SKILL.md` or `.claude/tdd/SKILL.md`), include `skills: [tdd]` in the frontmatter. Skip the `skills:` key entirely otherwise.
 - Prompt should reference the detected framework, bundler/styling system (or Flutter widget/state-management approach), and component conventions visible in the repo.
 - If there is no real frontend, scope the agent to templates/assets and note it.
 
 **backend-engineer**
 - Tools: include `Bash(<build-tool>:*)` (e.g., `Bash(./gradlew:*)`, `Bash(mvn:*)`, `Bash(go:*)`, `Bash(python:*)`, `Bash(pytest:*)`) — pick from inspection. Plus `Read, Edit, Write, Grep, Glob`.
+- Skills: same rule as `frontend-engineer` — include `skills: [tdd]` when a `tdd` skill is present in the project, omit otherwise.
 - Prompt should reference the detected framework, persistence layer (if visible), and testing conventions. For **Ratpack**, mention handler-chain composition, async/Promise idioms, and Groovy-vs-Java conventions in the codebase. For **jOOQ**, mention the generated DSL classes, `DSLContext` injection patterns, and where the codegen output lives.
 
 **security-reviewer**
